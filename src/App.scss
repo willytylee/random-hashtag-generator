@@ -1,0 +1,25 @@
+.mainTable{
+	width: 100%;
+	td {
+		vertical-align: top;
+		padding: 0 8px;
+		&.select{
+			width: 5%;
+		}
+		&.category{
+			width: 10%;
+		}
+		&.standard{
+			width: 35%;
+		}
+		&.compulsory{
+			width: 35%;
+		}
+		&.count{
+			width: 5%;
+		}
+		&.remove{
+			width: 10%;
+		}
+	}
+}

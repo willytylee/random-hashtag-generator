@@ -1,55 +1,71 @@
 import { useState, useEffect } from "react";
-import "./App.css";
+import { Button, Slider, Grid } from "@mui/material";
+import "./App.scss";
 import { CategoryForm } from "./components/CategoryForm";
 import { HashtagTextarea } from "./components/HashtagTextarea";
 import { data } from "./Data.js";
 
 const App = () => {
   const [inputFields, setInputFields] = useState(data);
-  const [finalHashtagsField, setFinalHashtagsField] = useState("");
 
   const handleFormChange = (i, e) => {
-    let data = [...inputFields];
-    data[i][e.target.name] = e.target.value;
-    setInputFields(data);
+    const data = inputFields;
+    data["hashtags"][i][e.target.name] = e.target.value;
+    setInputFieldsFn(data);
+    submit();
   };
 
   const handleCheckboxChange = (i, e) => {
-    let data = [...inputFields];
-    data[i][e.target.name] = e.target.checked;
-    setInputFields(data);
+    const data = inputFields;
+    data["hashtags"][i][e.target.name] = e.target.checked;
+    setInputFieldsFn(data);
+    submit();
+  };
+
+  const handleSliderChange = (e) => {
+    const data = inputFields;
+    data["maxLimit"] = e.target.value;
+    setInputFieldsFn(data);
+    submit();
+  };
+
+  const handlefinalHashtagFieldChange = (e) => {
+    const data = inputFields;
+    data["finalHashtags"] = e.target.value;
+    setInputFieldsFn(data);
   };
 
   const addCategory = () => {
-    let newfield = {
+    const data = inputFields;
+    const newfield = {
       selected: false,
       category: "",
       standard: "",
       compulsory: "",
       count: 0,
     };
-
-    setInputFields([...inputFields, newfield]);
+    data["hashtags"] = [...inputFields["hashtags"], newfield];
+    setInputFieldsFn(data);
   };
 
   const remove = (i, e) => {
     e.preventDefault();
-    let data = [...inputFields];
-    data.splice(i, 1);
-    setInputFields(data);
+
+    const data = inputFields;
+    data.hashtags.splice(i, 1);
+    setInputFieldsFn(data);
+    submit();
   };
 
-  const submit = (e) => {
-    e.preventDefault();
-
-    const max_limit = 27;
+  const submit = () => {
+    const max_limit = inputFields.maxLimit;
     let compulsoryArr = [];
     let standardFullArr = [];
     let standardReducedArr = [];
     let finalHashtags = [];
     let totalCount = 0;
 
-    inputFields.forEach((value) => {
+    inputFields.hashtags.forEach((value) => {
       // Group the compulsory hashtags
       const { select, standard, compulsory, count } = value;
       if (select) {
@@ -87,32 +103,38 @@ const App = () => {
         .splice(0, max_limit - compulsoryArr.length)
         .concat(compulsoryArr);
     } else {
-      finalHashtags = standardFullArr
-        .sort(() => 0.5 - Math.random())
-        .splice(0, max_limit - compulsoryArr.length)
-        .concat(compulsoryArr);
+      finalHashtags = standardFullArr.concat(compulsoryArr);
     }
 
     finalHashtags = finalHashtags.sort(() => 0.5 - Math.random()).join(" ");
 
-    setFinalHashtagsField(finalHashtags);
+    const data = inputFields;
+    data["finalHashtags"] = finalHashtags;
+    setInputFieldsFn(data);
+  };
+
+  const setInputFieldsFn = (data) => {
+    setInputFields((prevState) => ({
+      ...prevState,
+      ...data,
+    }));
   };
 
   return (
     <>
-      <div>Hashtag Generator</div>
-
-      <table>
-        <tbody>
+      <table className="mainTable">
+        <thead>
           <tr>
-            <td>Select</td>
-            <td>Category</td>
-            <td>Standard Hashtags</td>
-            <td>Compulsory</td>
-            <td>Count</td>
-            <td>Remove</td>
+            <td className="select">Select</td>
+            <td className="category">Category</td>
+            <td className="standard">Standard Hashtags</td>
+            <td className="compulsory">Compulsory</td>
+            <td className="count">Count</td>
+            <td className="remove">Remove</td>
           </tr>
-          {inputFields.map((input, i) => {
+        </thead>
+        <tbody>
+          {inputFields?.hashtags?.map((input, i) => {
             return (
               <CategoryForm
                 input={input}
@@ -126,10 +148,34 @@ const App = () => {
           })}
         </tbody>
       </table>
-      <HashtagTextarea name="finalHashTags" value={finalHashtagsField} />
-
-      <button onClick={addCategory}>Create Category</button>
-      <button onClick={submit}>Submit</button>
+      <Button onClick={addCategory}>Create Category</Button>
+      <Grid container>
+        <Grid item xs={10}>
+          <HashtagTextarea
+            name="finalHashTags"
+            rows={4}
+            value={inputFields.finalHashtags}
+            onChange={(e) => handlefinalHashtagFieldChange(e)}
+          ></HashtagTextarea>
+        </Grid>
+        <Grid item xs={2}>
+          <Button
+            variant="contained"
+            inputProps={{ style: { width: "100%" } }}
+            onClick={submit}
+          >
+            Generate
+          </Button>
+          <div>Maximum Limited: {inputFields.maxLimit}</div>
+          <Slider
+            aria-label="Volume"
+            value={inputFields.maxLimit}
+            max={30}
+            step={1}
+            onChange={handleSliderChange}
+          />
+        </Grid>
+      </Grid>
     </>
   );
 };

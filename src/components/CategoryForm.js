@@ -1,4 +1,6 @@
 import React from "react";
+import { IconButton, TextField, Switch } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { HashtagTextarea } from "./HashtagTextarea";
 
 export const CategoryForm = (props) => {
@@ -7,7 +9,7 @@ export const CategoryForm = (props) => {
   return (
     <tr>
       <td>
-        <input
+        <Switch
           type="checkbox"
           name="select"
           checked={input.select}
@@ -15,8 +17,10 @@ export const CategoryForm = (props) => {
         />
       </td>
       <td>
-        <input
-          type="text"
+        <TextField
+          variant="standard"
+          inputProps={{ style: { fontSize: 13 } }}
+          size="small"
           name="category"
           value={input.category}
           onChange={(e) => handleFormChange(i, e)}
@@ -25,8 +29,7 @@ export const CategoryForm = (props) => {
       <td>
         <HashtagTextarea
           name="standard"
-          cols="30"
-          rows="5"
+          rows={3}
           value={input.standard}
           onChange={(e) => handleFormChange(i, e)}
         />
@@ -34,22 +37,31 @@ export const CategoryForm = (props) => {
       <td>
         <HashtagTextarea
           name="compulsory"
-          cols="30"
-          rows="5"
+          rows={3}
           value={input.compulsory}
           onChange={(e) => handleFormChange(i, e)}
         />
       </td>
       <td>
-        <input
-          type="text"
+        <TextField
+          variant="standard"
+          inputProps={{ style: { fontSize: 13 } }}
+          size="small"
           name="count"
+          type="number"
           value={input.count}
           onChange={(e) => handleFormChange(i, e)}
         />
       </td>
       <td>
-        <button onClick={(e) => remove(i, e)}>Remove</button>
+        <IconButton
+          variant="outlined"
+          color="error"
+          size="small"
+          onClick={(e) => remove(i, e)}
+        >
+          <DeleteIcon />
+        </IconButton>
       </td>
     </tr>
   );

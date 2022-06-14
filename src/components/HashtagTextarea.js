@@ -1,18 +1,22 @@
 import React from "react";
+import { TextField } from "@mui/material";
+import "./HashtagTextarea.scss";
 
 export const HashtagTextarea = (props) => {
-  const { name, cols, rows, value, onChange } = props;
+  const { name, rows, value, onChange } = props;
   const hashtagCount = value ? value.match(/#([^ ]+)/g)?.length : 0;
   return (
-    <>
-      <textarea
+    <div className="hashtag-textarea">
+      <TextField
         name={name}
-        cols={cols}
+        multiline
+        inputProps={{ style: { fontSize: 13 } }}
+        size="small"
         rows={rows}
         value={value}
         onChange={onChange}
-      ></textarea>
-      {hashtagCount}
-    </>
+      />
+      <div className="hashtag-count">{hashtagCount}</div>
+    </div>
   );
 };
