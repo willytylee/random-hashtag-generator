@@ -1,12 +1,9 @@
-import React from "react";
-import { TextField } from "@mui/material";
-import "./HashtagTextarea.scss";
+import { TextField, styled } from "@mui/material";
 
-export const HashtagTextarea = (props) => {
-  const { name, rows, value, onChange } = props;
+export const HashtagTextarea = ({ name, rows, value, onChange }) => {
   const hashtagCount = value ? value.match(/#([^ ]+)/g)?.length : 0;
   return (
-    <div className="hashtag-textarea">
+    <HashtagTextareaRoot>
       <TextField
         name={name}
         multiline
@@ -17,6 +14,17 @@ export const HashtagTextarea = (props) => {
         onChange={onChange}
       />
       <div className="hashtag-count">{hashtagCount}</div>
-    </div>
+    </HashtagTextareaRoot>
   );
 };
+
+const HashtagTextareaRoot = styled("div")({
+  width: "100%",
+  fontSize: "13px",
+  ".MuiFormControl-root": {
+    width: "100%",
+  },
+  ".hashtag-count": {
+    textAlign: "right",
+  },
+});

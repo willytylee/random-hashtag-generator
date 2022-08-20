@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+  font-family: "Noto Sans", sans-serif;
+  overscroll-behavior-y: contain;
+  overflow-x: hidden;
+}
+body {
+  margin: 0;
+  height: 100%;
+}
+#root {
+  padding: 24px 40px;
+}

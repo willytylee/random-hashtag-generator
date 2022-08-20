@@ -1,35 +1,13 @@
 import { useState } from "react";
-import { Button, Slider, Grid } from "@mui/material";
-import "./App.scss";
-import { CategoryForm } from "./components/CategoryForm";
-import { HashtagTextarea } from "./components/HashtagTextarea";
+import { styled, Button } from "@mui/material";
+import "./App.css";
 import { data } from "./Data";
+import { MainTable } from "./components/MainTable";
+import { HashtagReturn } from "./components/HashtagReturn";
+import { Controller } from "./components/Controller";
 
 const App = () => {
   const [inputFields, setInputFields] = useState(data);
-
-  const handleFormChange = (i, e) => {
-    inputFields["hashtags"][i][e.target.name] = e.target.value;
-    setInputFieldsFn(inputFields);
-    submit();
-  };
-
-  const handleCheckboxChange = (i, e) => {
-    inputFields["hashtags"][i][e.target.name] = e.target.checked;
-    setInputFieldsFn(inputFields);
-    submit();
-  };
-
-  const handleSliderChange = (e) => {
-    inputFields["maxLimit"] = e.target.value;
-    setInputFieldsFn(inputFields);
-    submit();
-  };
-
-  const handlefinalHashtagFieldChange = (e) => {
-    inputFields["finalHashtags"] = e.target.value;
-    setInputFieldsFn(inputFields);
-  };
 
   const addCategory = () => {
     const newfield = {
@@ -41,14 +19,6 @@ const App = () => {
     };
     inputFields["hashtags"] = [...inputFields["hashtags"], newfield];
     setInputFieldsFn(inputFields);
-  };
-
-  const remove = (i, e) => {
-    e.preventDefault();
-
-    inputFields.hashtags.splice(i, 1);
-    setInputFieldsFn(inputFields);
-    submit();
   };
 
   const submit = () => {
@@ -82,8 +52,6 @@ const App = () => {
       }
     });
 
-    // array_diff
-
     // If the number of reduced hashtag and compulsory larger than the limit,
     if (standardReducedArr.length + compulsoryArr.length > max_limit) {
       finalHashtags = standardReducedArr
@@ -113,61 +81,40 @@ const App = () => {
   };
 
   return (
-    <>
-      <table className="mainTable">
-        <thead>
-          <tr>
-            <td className="select">Select</td>
-            <td className="category">Category</td>
-            <td className="standard">Standard Hashtags</td>
-            <td className="compulsory">Compulsory</td>
-            <td className="count">Count</td>
-            <td className="remove">Remove</td>
-          </tr>
-        </thead>
-        <tbody>
-          {inputFields?.hashtags?.map((input, i) => (
-            <CategoryForm
-              input={input}
-              key={i}
-              i={i}
-              remove={remove}
-              handleFormChange={handleFormChange}
-              handleCheckboxChange={handleCheckboxChange}
-            />
-          ))}
-        </tbody>
-      </table>
-      <Button onClick={addCategory}>Create Category</Button>
-      <Grid container>
-        <Grid item xs={10}>
-          <HashtagTextarea
-            name="finalHashTags"
-            rows={4}
-            value={inputFields.finalHashtags}
-            onChange={(e) => handlefinalHashtagFieldChange(e)}
-          />
-        </Grid>
-        <Grid item xs={2}>
-          <Button
-            variant="contained"
-            inputProps={{ style: { width: "100%" } }}
-            onClick={submit}
-          >
-            Generate
-          </Button>
-          <div>Maximum Limited: {inputFields.maxLimit}</div>
-          <Slider
-            aria-label="Volume"
-            value={inputFields.maxLimit}
-            max={30}
-            step={1}
-            onChange={handleSliderChange}
-          />
-        </Grid>
-      </Grid>
-    </>
+    <AppRoot>
+      <div class="title">Random Hashtag Generator</div>
+      <MainTable
+        inputFields={inputFields}
+        setInputFieldsFn={setInputFieldsFn}
+        submit={submit}
+      />
+      <Button onClick={addCategory}>Create New Category</Button>
+      <div className="bottom">
+        <HashtagReturn
+          inputFields={inputFields}
+          setInputFieldsFn={setInputFieldsFn}
+        />
+
+        <Controller
+          submit={submit}
+          inputFields={inputFields}
+          setInputFieldsFn={setInputFieldsFn}
+        />
+      </div>
+    </AppRoot>
   );
 };
+
+const AppRoot = styled("div")({
+  width: "100%",
+  ".title": {
+    fontSize: "26px",
+    paddingBottom: "22px",
+  },
+  ".bottom": {
+    display: "flex",
+    gap: "24px",
+  },
+});
 
 export default App;
